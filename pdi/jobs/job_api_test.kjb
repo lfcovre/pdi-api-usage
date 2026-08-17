@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <name>job_api_test</name>
+  <description>Job minimo para validar execucao via API REST do PDI.</description>
+  <extended_description>Registra no log a mensagem recebida no parametro P_MESSAGE.</extended_description>
+  <job_version>1.0</job_version>
+  <job_status>0</job_status>
+  <directory>/</directory>
+  <created_user/>
+  <created_date/>
+  <modified_user/>
+  <modified_date/>
+
+  <parameters>
+    <parameter>
+      <name>P_MESSAGE</name>
+      <default_value>Execucao local do job de teste</default_value>
+      <description>Mensagem enviada pelo cliente da API para validacao da passagem de parametros.</description>
+    </parameter>
+  </parameters>
+
+  <slaveservers/>
+  <pass_batchid>N</pass_batchid>
+  <shared_objects_file/>
+
+  <entries>
+    <entry>
+      <name>START</name>
+      <description>Inicio do job.</description>
+      <type>SPECIAL</type>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>0</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>160</xloc>
+      <yloc>160</yloc>
+    </entry>
+
+    <entry>
+      <name>Write API Message To Log</name>
+      <description>Writes the P_MESSAGE parameter to the PDI execution log.</description>
+      <type>WRITE_TO_LOG</type>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>440</xloc>
+      <yloc>160</yloc>
+      <logmessage>[PDI API TEST] Job executado. P_MESSAGE=${P_MESSAGE}</logmessage>
+      <loglevel>Basic</loglevel>
+      <logsubject>PDI API TEST</logsubject>
+    </entry>
+  </entries>
+
+  <hops>
+    <hop>
+      <from>START</from>
+      <to>Write API Message To Log</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+  </hops>
+
+  <notepads/>
+</job>

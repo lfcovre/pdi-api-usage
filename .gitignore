@@ -1,0 +1,13 @@
+# Local environment configuration (may contain credentials)
+/config/environment.bat
+
+# Temporary/runtime files
+*.log
+*.tmp
+*.bak
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

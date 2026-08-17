@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Reference configuration for the future Ex06 (Carte + preconfigured repository).
+  It is intentionally NOT used by Ex04.
+
+  The repository name must exist in repositories.xml visible to the user that
+  starts Carte. Replace all example values before using this file.
+-->
+<slave_config>
+  <slaveserver>
+    <name>carte-local</name>
+    <hostname>127.0.0.1</hostname>
+    <port>8080</port>
+    <username>cluster</username>
+    <password>cluster</password>
+    <master>N</master>
+  </slaveserver>
+
+  <repository>
+    <name>REPOSITORY_NAME</name>
+    <username>REPOSITORY_USER</username>
+    <password>REPOSITORY_PASSWORD</password>
+  </repository>
+</slave_config>
