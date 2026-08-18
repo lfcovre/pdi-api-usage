@@ -343,9 +343,9 @@ Esse arquivo registra a perspectiva do **cliente HTTP**. Ele continua sendo dife
 
 ## 10. Validacao dos Ex02 e Ex05
 
-Os Ex02 e Ex05 estao implementados, mas somente devem ser marcados como validados depois que os dois artefatos forem salvos/importados no repository e executados com sucesso em cada executor.
+O **Ex05 foi validado**. O **Ex02 foi investigado, mas nao validado** no ambiente Pentaho Server atual.
 
-Antes do teste, confirme:
+Para novos ambientes ou repeticao dos testes, confirme:
 
 1. `PDI_REPOSITORY_NAME` corresponde ao nome conhecido pelo executor;
 2. o executor consegue localizar seu `repositories.xml`;
@@ -353,7 +353,7 @@ Antes do teste, confirme:
 4. `trf_api_test` e `job_api_test` existem na pasta configurada;
 5. os caminhos `PDI_REPOSITORY_TRANS` e `PDI_REPOSITORY_JOB` nao sao caminhos locais do Windows.
 
-O criterio de sucesso continua sendo:
+O criterio de sucesso para um cenario de repository explicito continua sendo:
 
 - resposta HTTP `2xx`;
 - mensagem `[PDI API TEST]` no log do executor;
@@ -361,3 +361,56 @@ O criterio de sucesso continua sendo:
 - ausencia de erros de execucao.
 
 Consulte [`REPOSITORY.md`](REPOSITORY.md) para o passo a passo.
+
+
+### 10.1 Ex05 - resultado validado
+
+A Transformation e o Job retornaram `HTTP_STATUS=200`. O terminal do Carte mostrou:
+
+```text
+RepositoriesMeta - Reading repositories XML file: C:\Users\sofintech\.kettle\repositories.xml
+```
+
+seguido da criacao/sincronizacao dos servicos `PurRepositoryConnector` e das mensagens:
+
+```text
+[PDI API TEST] Transformation executada. P_MESSAGE=Mensagem enviada pela API REST do PDI
+[PDI API TEST] Job executado. P_MESSAGE=Mensagem enviada pela API REST do PDI
+```
+
+O Job terminou com `result=[true]`.
+
+### 10.2 Ex02 - resultado da investigacao
+
+A chamada ao Pentaho Server retornou HTTP 500 e `Unable to find repository: localhost`. Como o Ex05 validou posteriormente exatamente o mesmo repository `localhost`, `repositories.xml`, credenciais e caminhos, o Ex02 permanece registrado como **investigado / nao validado no ambiente atual**.
+
+### 10.3 Descobrindo o PID atual do Pentaho Server no Windows
+
+O PID do Java pode mudar apos reinicializacao. Se houver apenas um `java.exe` em execucao:
+
+```powershell
+(Get-Process java).Id
+```
+
+Se houver mais de um processo Java (por exemplo Pentaho Server, Spoon ou Carte), liste primeiro os processos:
+
+```powershell
+Get-CimInstance Win32_Process -Filter "name='java.exe'" |
+    Select-Object ProcessId, ExecutablePath, CommandLine
+```
+
+Outra opcao e usar o `jcmd` da instalacao Java e listar as JVMs conhecidas:
+
+```powershell
+& "C:\Program Files\Java\jdk-21\bin\jcmd.exe" -l
+```
+
+Depois use o PID real, sem os caracteres `<` e `>`:
+
+```powershell
+& "C:\Program Files\Java\jdk-21\bin\jcmd.exe" `
+    9824 VM.system_properties |
+    Select-String "user.home|user.dir|KETTLE_HOME"
+```
+
+`9824` e apenas um exemplo de PID observado durante os testes; ele pode mudar.

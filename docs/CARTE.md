@@ -147,6 +147,8 @@ em `config/environment.bat`.
 
 Essas credenciais nao sao credenciais de repository PDI. A diferenca sera importante nos exemplos Ex05 e Ex06.
 
+No **Ex05**, o Carte usa esta mesma configuracao basica e recebe `rep`, `user` e `pass` na chamada HTTP. O bloco `<repository>` do arquivo `carte-repository.example.xml` **nao e usado no Ex05**; ele fica reservado para o Ex06, no qual `runTrans`/`runJob` usarao um repository pre-configurado no Carte.
+
 ### `master`
 
 ```xml
@@ -314,10 +316,19 @@ A documentacao oficial do Pentaho sobre configuracao de Carte mostra a inicializ
 Para execucoes baseadas em repository, a documentacao tambem informa que o Carte precisa ter acesso ao `repositories.xml`; esse ponto sera aplicado posteriormente no Ex06.
 
 
-## Repository explicito no Ex05
+## 12. Repository explicito no Ex05
 
 O Ex05 continua usando o mesmo Carte em `localhost:9090`, mas exige que o processo do Carte consiga localizar uma definicao de repository correspondente a `PDI_REPOSITORY_NAME`.
 
 Isso e diferente do Ex06: no Ex05 as credenciais do repository sao enviadas em cada chamada `executeTrans`/`executeJob`; no Ex06 elas ficarao pre-configuradas no XML do Carte e serao usadas por `runTrans`/`runJob`.
 
 Consulte [`REPOSITORY.md`](REPOSITORY.md) antes de testar o Ex05.
+
+
+## 13. Uso da configuracao basica no Ex05
+
+O `carte-filesystem.example.xml` nasceu no Ex04, mas sua configuracao de servidor tambem e suficiente para o Ex05. O nome do arquivo descreve a primeira finalidade para a qual foi criado; funcionalmente, ele configura apenas a instancia Carte (`localhost:9090`, autenticacao HTTP e `master=N`).
+
+No Ex05, a definicao do repository continua em `C:\Users\sofintech\.kettle\repositories.xml`, enquanto `rep`, `user` e `pass` sao enviados pelos scripts.
+
+O `carte-repository.example.xml` deve ser usado somente quando chegarmos ao Ex06, para manter separados os conceitos de **repository explicito** e **repository pre-configurado**.

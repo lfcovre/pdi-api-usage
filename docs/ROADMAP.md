@@ -7,10 +7,10 @@ Este arquivo registra os cenarios planejados para que eles nao se percam durante
 | Exemplo | Executor | Origem / modo | API principal | Status |
 |---|---|---|---|---|
 | Ex01 | Pentaho Server | Filesystem acessivel pelo servidor | `executeTrans` / `executeJob` | **Validado** |
-| Ex02 | Pentaho Server | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | **Implementado / pendente de validacao** |
+| Ex02 | Pentaho Server | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | **Investigado / nao validado no ambiente atual** |
 | Ex03 | Pentaho Server | Repositorio pre-configurado | `runTrans` / `runJob` | Planejado; validar no ambiente Pentaho Server |
 | Ex04 | Carte Standalone | Filesystem acessivel pelo Carte | `executeTrans` / `executeJob` | **Validado** |
-| Ex05 | Carte Standalone | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | **Implementado / pendente de validacao** |
+| Ex05 | Carte Standalone | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | **Validado** |
 | Ex06 | Carte Standalone | Repositorio pre-configurado no Carte | `runTrans` / `runJob` | Planejado |
 
 ## Blocos futuros
@@ -39,3 +39,9 @@ Esse bloco sera mantido separado dos exemplos Carte porque o scheduler pertence 
 ### legacy
 
 Registrar, apenas para estudo e compatibilidade, APIs depreciadas relacionadas ao envio de configuracoes XML, como `addTrans` e `addJob`. Esses exemplos nao devem ser apresentados como abordagem recomendada para novas integracoes.
+
+## Achado da etapa de repository explicito
+
+O Ex05 confirmou o fluxo documentado no Carte Standalone: o processo Carte leu `C:\Users\sofintech\.kettle\repositories.xml`, encontrou o repository `localhost`, conectou ao Pentaho Repository e executou os dois artefatos.
+
+O Ex02, usando os mesmos valores de repository, retornou `Unable to find repository: localhost` no Carte incorporado ao Pentaho Server. Por enquanto, o projeto registra esse comportamento como **investigado / nao validado**, sem alterar arquivos internos do Pentaho Server apenas para forcar a simetria com o Carte Standalone. A arquitetura dos Ex02/Ex03 sera reavaliada antes da implementacao do proximo bloco do Pentaho Server.

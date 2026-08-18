@@ -2,7 +2,7 @@
 
 Projeto de estudo e referencia pratica para executar **Pentaho Data Integration (PDI)** Jobs (`.kjb`) e Transformations (`.ktr`) por HTTP usando as APIs expostas pelo **Pentaho Server** e pelo **Carte Standalone**.
 
-O projeto esta sendo construido de forma incremental. Os cenarios de **filesystem** ja foram validados e esta etapa acrescenta os exemplos de **repository explicito**, mantendo os mesmos artefatos PDI de teste.
+O projeto esta sendo construido de forma incremental. Os cenarios de **filesystem** (Ex01 e Ex04) e o **repository explicito no Carte Standalone** (Ex05) ja foram validados. O Ex02 foi implementado e investigado no ambiente de testes, mas o Carte incorporado ao Pentaho Server nao localizou a definicao de repository informada em `rep`.
 
 ## Objetivos
 
@@ -18,10 +18,10 @@ O projeto esta sendo construido de forma incremental. Os cenarios de **filesyste
 | Exemplo | Executor | Origem / modo | Endpoint | Status |
 |---|---|---|---|---|
 | **Ex01** | Pentaho Server | Filesystem | `executeTrans` / `executeJob` | **Validado** |
-| **Ex02** | Pentaho Server | Repository explicito | `executeTrans` / `executeJob` | Implementado / pendente de validacao |
+| **Ex02** | Pentaho Server | Repository explicito | `executeTrans` / `executeJob` | Investigado / nao validado no ambiente atual |
 | **Ex03** | Pentaho Server | Repository pre-configurado | `runTrans` / `runJob` | Planejado / validar |
 | **Ex04** | Carte Standalone | Filesystem | `executeTrans` / `executeJob` | **Validado** |
-| **Ex05** | Carte Standalone | Repository explicito | `executeTrans` / `executeJob` | Implementado / pendente de validacao |
+| **Ex05** | Carte Standalone | Repository explicito | `executeTrans` / `executeJob` | **Validado** |
 | **Ex06** | Carte Standalone | Repository pre-configurado | `runTrans` / `runJob` | Planejado |
 
 > Os exemplos de monitoramento, Scheduler API e APIs depreciadas foram registrados em [`docs/ROADMAP.md`](docs/ROADMAP.md) e serao tratados depois dos seis cenarios principais.
@@ -244,6 +244,15 @@ Exemplo:
 
 O executor ainda precisa conhecer a definicao do repository em seu ambiente PDI. O procedimento completo, incluindo `repositories.xml`, publicacao dos artefatos, duas camadas de autenticacao e troubleshooting, esta em [`docs/REPOSITORY.md`](docs/REPOSITORY.md).
 
+### Resultado atual dos testes de repository explicito
+
+No ambiente de validacao deste projeto:
+
+- **Ex05 / Carte Standalone:** validado. O Carte leu explicitamente `C:\Users\sofintech\.kettle\repositories.xml`, conectou ao repository `localhost` e executou Transformation e Job;
+- **Ex02 / Pentaho Server:** investigado, mas nao validado. A chamada retornou `Unable to find repository: localhost` antes de autenticar no repository ou procurar o objeto.
+
+Esse resultado demonstra que o mesmo `repositories.xml`, nome de repository, credenciais e caminhos logicos funcionam no Carte Standalone. Portanto, o erro observado no Ex02 esta relacionado ao contexto do Carte incorporado ao Pentaho Server e nao aos dados basicos de configuracao usados pelo Ex05.
+
 ## Como os parametros sao enviados
 
 Os scripts usam `--data-urlencode` em vez de montar manualmente a query string. Exemplo conceitual:
@@ -357,10 +366,8 @@ A implementacao completa desse caso sera feita depois dos exemplos de repository
 
 ## Proximas etapas
 
-A proxima entrega do projeto sera:
+Com Ex01, Ex04 e Ex05 validados, a proxima etapa e **reavaliar os cenarios do Pentaho Server antes de implementar Ex03** e, em paralelo, preparar o **Ex06 - Carte Standalone + repository pre-configurado** com `runTrans` / `runJob`.
 
-1. **Ex02 - Pentaho Server + repository explicito**;
-2. **Ex05 - Carte Standalone + repository explicito**;
-3. depois, **Ex03** e **Ex06** com `runTrans` / `runJob`.
+O Ex02 permanece no projeto como cenario implementado e investigado, com o resultado `Unable to find repository: localhost` registrado para o Carte incorporado ao Pentaho Server. Nao serao feitas alteracoes adicionais no Server apenas para forcar uma simetria com o Carte Standalone sem antes revisar o modelo tecnico do exemplo.
 
-Consulte [`docs/ROADMAP.md`](docs/ROADMAP.md) para os blocos que ficaram registrados para uma fase posterior.
+Consulte [`docs/ROADMAP.md`](docs/ROADMAP.md) para os blocos futuros de monitoramento, Scheduler API e APIs legadas.
