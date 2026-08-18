@@ -11,7 +11,7 @@ set "PENTAHO_SERVER_USER=admin"
 set "PENTAHO_SERVER_PASSWORD=password"
 
 rem Carte Standalone
-set "CARTE_URL=http://localhost:8080"
+set "CARTE_URL=http://localhost:9090"
 set "CARTE_USER=cluster"
 set "CARTE_PASSWORD=cluster"
 

@@ -19,7 +19,7 @@ curl.exe ^
   --data-urlencode "level=Basic" ^
   --data-urlencode "P_MESSAGE=Teste via API" ^
   --write-out "\nHTTP_STATUS=%%{http_code}\n" ^
-  "http://localhost:8080/kettle/executeTrans"
+  "http://localhost:9090/kettle/executeTrans/"
 ```
 
 O caractere `^` é o continuador de linha do `cmd.exe`. Ele permite dividir um único comando em várias linhas para facilitar a leitura.
@@ -55,6 +55,13 @@ O script captura o código de saída do `curl` usando:
 ```bat
 set "CURL_EXIT=%ERRORLEVEL%"
 ```
+
+
+### Respostas `3xx`
+
+`--fail-with-body` considera falha respostas `4xx` e `5xx`, mas não transforma `3xx` em erro do `curl`. Por isso os scripts também verificam explicitamente o `HTTP_STATUS` e somente aceitam códigos `2xx` como sucesso.
+
+No Ex04 foi observado um `301` quando o endpoint Carte foi chamado sem a barra final. Os scripts usam a URL canônica com `/` e não usam `--location`, para que um redirecionamento inesperado não seja mascarado.
 
 ### `--user "usuario:senha"`
 
@@ -107,23 +114,33 @@ Por exemplo:
 
 é mais seguro e legível do que montar manualmente uma URL com espaços e aspas escapadas.
 
-### `--write-out`
+### `--output`
 
-Permite imprimir informações do `curl` depois que a resposta HTTP foi recebida.
-
-Os exemplos usam:
+Os scripts gravam temporariamente o corpo da resposta em um arquivo:
 
 ```bat
---write-out "\nHTTP_STATUS=%%{http_code}\n"
+--output "%RESPONSE_FILE%"
 ```
 
-para mostrar:
+Isso permite separar o **corpo da resposta** do **código HTTP**, exibir ambos de forma controlada e validar o status antes de declarar sucesso. O arquivo temporário é removido ao final do script.
+
+### `--write-out`
+
+Permite obter informações do `curl` depois que a resposta HTTP foi recebida. Os scripts atuais usam:
+
+```bat
+--write-out "%%{http_code}"
+```
+
+e redirecionam esse valor para um arquivo temporário de status. Em seguida exibem explicitamente:
 
 ```text
 HTTP_STATUS=200
 ```
 
 No `curl`, a variável é `%{http_code}`. Como o comando está dentro de um arquivo `.bat`, `%` possui significado especial para o `cmd.exe`; por isso escrevemos `%%{http_code}` para que um `%` literal chegue ao `curl`.
+
+A validação do script considera somente respostas `2xx` como sucesso. Assim, um `301`, embora não seja tratado como erro por `--fail-with-body`, não gera mais a mensagem `[OK]`.
 
 ## 3. Parâmetros enviados ao PDI
 
@@ -176,8 +193,8 @@ http://localhost:8080/pentaho/kettle/executeJob
 No Carte Standalone:
 
 ```text
-http://localhost:8080/kettle/executeTrans
-http://localhost:8080/kettle/executeJob
+http://localhost:9090/kettle/executeTrans/
+http://localhost:9090/kettle/executeJob/
 ```
 
 ## 5. Por que os scripts não usam `-X GET`?

@@ -20,7 +20,7 @@ O projeto esta sendo construido de forma incremental. A primeira entrega impleme
 | **Ex01** | Pentaho Server | Filesystem | `executeTrans` / `executeJob` | **Validado** |
 | **Ex02** | Pentaho Server | Repository explicito | `executeTrans` / `executeJob` | Proxima etapa |
 | **Ex03** | Pentaho Server | Repository pre-configurado | `runTrans` / `runJob` | Planejado / validar |
-| **Ex04** | Carte Standalone | Filesystem | `executeTrans` / `executeJob` | Implementado / pendente de validação via API |
+| **Ex04** | Carte Standalone | Filesystem | `executeTrans` / `executeJob` | **Validado** |
 | **Ex05** | Carte Standalone | Repository explicito | `executeTrans` / `executeJob` | Proxima etapa |
 | **Ex06** | Carte Standalone | Repository pre-configurado | `runTrans` / `runJob` | Planejado |
 
@@ -35,8 +35,10 @@ pdi-api-usage/
 ├── config/
 │   ├── environment.example.bat
 │   └── carte/
+│       ├── carte-filesystem.example.xml
 │       └── carte-repository.example.xml
 ├── docs/
+│   ├── CARTE.md
 │   ├── CURL.md
 │   ├── ROADMAP.md
 │   └── TESTING.md
@@ -128,7 +130,7 @@ set "PENTAHO_SERVER_URL=http://localhost:8080/pentaho"
 set "PENTAHO_SERVER_USER=admin"
 set "PENTAHO_SERVER_PASSWORD=password"
 
-set "CARTE_URL=http://localhost:8080"
+set "CARTE_URL=http://localhost:9090"
 set "CARTE_USER=cluster"
 set "CARTE_PASSWORD=cluster"
 
@@ -185,17 +187,33 @@ scripts/curl/c02_carte_standalone/ex04_filesystem/
 Os endpoints usados sao:
 
 ```text
-/kettle/executeTrans
-/kettle/executeJob
+/kettle/executeTrans/
+/kettle/executeJob/
 ```
 
-Para um Carte local simples, um exemplo de inicializacao e:
+Neste projeto, o Carte usa a porta **9090** para nao conflitar com o Pentaho Server local, que normalmente esta em `8080`.
+
+Ha duas formas documentadas de iniciar o Carte para este exemplo:
+
+**Inicializacao rapida, sem arquivo XML:**
 
 ```bat
-Carte.bat 127.0.0.1 8080
+Carte.bat localhost 9090
 ```
 
+**Inicializacao usando o XML fornecido pelo projeto:**
+
+```bat
+Carte.bat "C:\caminho\pdi-api-usage\config\carte\carte-filesystem.example.xml"
+```
+
+O arquivo `carte-filesystem.example.xml` pode permanecer dentro do repositorio. Nao e necessario copia-lo para a pasta do PDI: basta fornecer ao `Carte.bat` o caminho completo do XML.
+
+Antes de executar o Ex04, confirme que o Carte iniciou em `http://localhost:9090/` e mantenha o terminal do Carte aberto para acompanhar suas mensagens.
+
 Assim como no Pentaho Server, o caminho do `.ktr` ou `.kjb` precisa ser acessivel ao **processo do Carte**.
+
+O passo a passo completo de configuracao, inicializacao, localizacao do XML e validacao esta em [`docs/CARTE.md`](docs/CARTE.md).
 
 ## Como os parametros sao enviados
 
@@ -208,7 +226,7 @@ curl.exe ^
   --data-urlencode "trans=C:\caminho\trf_api_test.ktr" ^
   --data-urlencode "level=Basic" ^
   --data-urlencode "P_MESSAGE=Teste via API" ^
-  "http://localhost:8080/kettle/executeTrans"
+  "http://localhost:9090/kettle/executeTrans/"
 ```
 
 Isso evita depender de aspas escapadas para caminhos com espacos e faz o URL encoding dos parametros.
@@ -268,6 +286,18 @@ O Ex01 foi validado para Transformation e Job. Nos testes realizados:
 - o `pdi.log` confirmou o recebimento de `P_MESSAGE` pelo Job e o término do job entry com resultado `true`.
 
 Os detalhes e exemplos de saída estão registrados em [`docs/TESTING.md`](docs/TESTING.md).
+
+## Resultado do Ex04
+
+O Ex04 foi validado para Transformation e Job em Carte Standalone na porta `9090`. Nos testes realizados:
+
+- `executeTrans/` retornou `HTTP_STATUS=200` e o terminal do Carte confirmou `[PDI API TEST]` com o valor recebido em `P_MESSAGE`;
+- `executeJob/` retornou `HTTP_STATUS=200`, `Job started` e um identificador em `<id>`;
+- o terminal do Carte confirmou o recebimento de `P_MESSAGE` pelo Job e o término com `result=[true]`.
+
+Durante a validação foi observado que chamar os endpoints Carte sem a barra final (`/kettle/executeTrans` e `/kettle/executeJob`) pode retornar `HTTP 301`, redirecionando para a URL com `/`. Por isso os scripts do Ex04 usam explicitamente `/kettle/executeTrans/` e `/kettle/executeJob/`.
+
+Os detalhes do `301` e o procedimento de diagnóstico estão em [`docs/TESTING.md`](docs/TESTING.md).
 
 ## Observacoes sobre a resposta HTTP
 

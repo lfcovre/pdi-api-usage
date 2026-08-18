@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Example Carte Standalone configuration for Ex04 (filesystem).
+
+  This file can stay inside the project. Carte.bat can receive the full path
+  to this XML, so copying it into the PDI installation is not required.
+-->
+<slave_config>
+  <slaveserver>
+    <name>carte-local</name>
+    <hostname>localhost</hostname>
+    <port>9090</port>
+    <username>cluster</username>
+    <password>cluster</password>
+    <master>N</master>
+  </slaveserver>
+</slave_config>

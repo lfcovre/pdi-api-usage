@@ -9,8 +9,8 @@
 <slave_config>
   <slaveserver>
     <name>carte-local</name>
-    <hostname>127.0.0.1</hostname>
-    <port>8080</port>
+    <hostname>localhost</hostname>
+    <port>9090</port>
     <username>cluster</username>
     <password>cluster</password>
     <master>N</master>

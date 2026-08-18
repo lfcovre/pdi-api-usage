@@ -114,7 +114,37 @@ Para incluir duas linhas anteriores e posteriores a cada ocorrência:
 Select-String -Path $PdiLog -Pattern "PDI API TEST" -Context 2,2
 ```
 
-## 3. Executando os scripts pelo PowerShell
+## 3. Log e validacao no Carte Standalone
+
+No Ex04, o executor nao e o Pentaho Server, mas o **Carte Standalone**. Para os testes iniciais, mantenha aberto o terminal em que `Carte.bat` foi iniciado e acompanhe as mensagens produzidas pelo Carte.
+
+O projeto usa a porta:
+
+```text
+9090
+```
+
+Antes de executar os `.bat`, voce pode validar a porta no PowerShell:
+
+```powershell
+Test-NetConnection localhost -Port 9090
+```
+
+O resultado esperado inclui:
+
+```text
+TcpTestSucceeded : True
+```
+
+Durante a execucao do Ex04, procure no terminal do Carte pelo prefixo:
+
+```text
+[PDI API TEST]
+```
+
+A configuracao e o procedimento completo de inicializacao estao em [`CARTE.md`](CARTE.md).
+
+## 4. Executando os scripts pelo PowerShell
 
 É preferível executar os arquivos `.bat` a partir de um terminal durante os testes, pois assim a saída permanece disponível para análise.
 
@@ -131,7 +161,7 @@ Executar o arquivo por duplo clique pode fazer a janela fechar imediatamente ap�
 
 Os scripts não usam `pause` propositalmente, pois isso permite que continuem adequados para execução automatizada.
 
-## 4. Critério de validação dos exemplos
+## 5. Critério de validação dos exemplos
 
 Para considerar um teste válido, não é suficiente observar somente uma das evidências.
 
@@ -144,11 +174,11 @@ Use o seguinte conjunto:
 5. o valor de `P_MESSAGE` deve ser o valor enviado pelo script;
 6. não deve haver erro de execução da Transformation ou Job.
 
-## 5. Ex01 - resultado validado
+## 6. Ex01 - resultado validado
 
 O **Ex01 - Pentaho Server + filesystem** foi validado em 17/08/2026 para os dois artefatos.
 
-### 5.1 Transformation
+### 6.1 Transformation
 
 A chamada de:
 
@@ -172,7 +202,7 @@ O `pdi.log` confirmou a execução e registrou:
 
 Também foram observadas mensagens de conclusão dos steps `Generate Test Row` e `Write API Message To Log` sem erros.
 
-### 5.2 Job
+### 6.2 Job
 
 A chamada de:
 
@@ -200,13 +230,101 @@ O `pdi.log` confirmou:
 
 Também foi observado o término do job entry com resultado `true` e a finalização do Job.
 
-### 5.3 Observação sobre níveis de log
+### 6.3 Observação sobre níveis de log
 
 Durante a validação, algumas mensagens de início/fim do Job foram registradas pelo PDI como `WARN`, embora o Job tenha terminado com sucesso.
 
 Portanto, uma linha isolada com nível `WARN` não deve ser interpretada automaticamente como falha. A validação deve considerar o conjunto da execução: resultado do job entry, ausência de erros, mensagem de teste, resposta HTTP e término da execução.
 
-## 6. Salvando a saída do cliente em arquivo
+
+## 7. Ex04 - resultado validado
+
+O **Ex04 - Carte Standalone + filesystem** foi validado em 18/08/2026 para Transformation e Job, com Carte iniciado em `http://localhost:9090`.
+
+### 7.1 Transformation
+
+A chamada de:
+
+```text
+/kettle/executeTrans/
+```
+
+retornou:
+
+```text
+HTTP_STATUS=200
+```
+
+O terminal do Carte confirmou:
+
+```text
+[PDI API TEST] Transformation executada. P_MESSAGE=Mensagem enviada pela API REST do PDI
+```
+
+### 7.2 Job
+
+A chamada de:
+
+```text
+/kettle/executeJob/
+```
+
+retornou `HTTP_STATUS=200` e um corpo XML semelhante a:
+
+```xml
+<webresult>
+  <result>OK</result>
+  <message>Job started</message>
+  <id>...</id>
+</webresult>
+```
+
+O terminal do Carte confirmou:
+
+```text
+[PDI API TEST] Job executado. P_MESSAGE=Mensagem enviada pela API REST do PDI
+```
+
+e o término do Job com `result=[true]`.
+
+## 8. Troubleshooting: HTTP 301 no Carte
+
+Durante os testes, chamar o endpoint sem a barra final:
+
+```text
+http://localhost:9090/kettle/executeTrans
+```
+
+retornou `HTTP_STATUS=301`. A inspeção dos headers mostrou:
+
+```text
+Location: /kettle/executeTrans/?trans=...
+```
+
+Para inspecionar um redirecionamento sem segui-lo automaticamente, pode-se usar:
+
+```powershell
+curl.exe `
+  --silent `
+  --show-error `
+  --dump-header - `
+  --output NUL `
+  --user cluster:cluster `
+  --get `
+  --data-urlencode "trans=C:\caminho\trf_api_test.ktr" `
+  "http://localhost:9090/kettle/executeTrans"
+```
+
+O Ex04 usa diretamente as URLs canônicas com barra final:
+
+```text
+/kettle/executeTrans/
+/kettle/executeJob/
+```
+
+Os scripts não usam `--location` de propósito. Seguir automaticamente um `301` poderia esconder um endpoint incorreto. Para estes exemplos, somente respostas `2xx` são tratadas como sucesso HTTP.
+
+## 9. Salvando a saída do cliente em arquivo
 
 Caso seja necessário registrar também a saída do `.bat`, o próprio shell pode redirecioná-la:
 
