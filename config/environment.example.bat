@@ -18,3 +18,12 @@ set "CARTE_PASSWORD=cluster"
 rem Common execution options
 set "PDI_LOG_LEVEL=Basic"
 set "PDI_TEST_MESSAGE=Mensagem enviada pela API REST do PDI"
+
+rem Explicit repository examples (Ex02 and Ex05)
+rem The repository name must match a repository definition visible to the executor.
+rem The object paths are logical repository paths; do not use local filesystem paths.
+set "PDI_REPOSITORY_NAME=REPOSITORY_NAME"
+set "PDI_REPOSITORY_USER=admin"
+set "PDI_REPOSITORY_PASSWORD=password"
+set "PDI_REPOSITORY_TRANS=/public/pdi-api-usage/trf_api_test"
+set "PDI_REPOSITORY_JOB=/public/pdi-api-usage/job_api_test"

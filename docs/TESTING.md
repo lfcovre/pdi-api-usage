@@ -339,3 +339,25 @@ execute_transformation.bat > transformation-client.log 2>&1
 ```
 
 Esse arquivo registra a perspectiva do **cliente HTTP**. Ele continua sendo diferente do `pdi.log`, que registra a perspectiva do **PDI no servidor**.
+
+
+## 10. Validacao dos Ex02 e Ex05
+
+Os Ex02 e Ex05 estao implementados, mas somente devem ser marcados como validados depois que os dois artefatos forem salvos/importados no repository e executados com sucesso em cada executor.
+
+Antes do teste, confirme:
+
+1. `PDI_REPOSITORY_NAME` corresponde ao nome conhecido pelo executor;
+2. o executor consegue localizar seu `repositories.xml`;
+3. `PDI_REPOSITORY_USER` e `PDI_REPOSITORY_PASSWORD` autenticam no repository;
+4. `trf_api_test` e `job_api_test` existem na pasta configurada;
+5. os caminhos `PDI_REPOSITORY_TRANS` e `PDI_REPOSITORY_JOB` nao sao caminhos locais do Windows.
+
+O criterio de sucesso continua sendo:
+
+- resposta HTTP `2xx`;
+- mensagem `[PDI API TEST]` no log do executor;
+- valor correto de `P_MESSAGE`;
+- ausencia de erros de execucao.
+
+Consulte [`REPOSITORY.md`](REPOSITORY.md) para o passo a passo.

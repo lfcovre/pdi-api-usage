@@ -2,7 +2,7 @@
 
 Projeto de estudo e referencia pratica para executar **Pentaho Data Integration (PDI)** Jobs (`.kjb`) e Transformations (`.ktr`) por HTTP usando as APIs expostas pelo **Pentaho Server** e pelo **Carte Standalone**.
 
-O projeto esta sendo construido de forma incremental. A primeira entrega implementa os cenarios de **filesystem** e prepara os artefatos PDI e a configuracao que serao reutilizados nos demais testes.
+O projeto esta sendo construido de forma incremental. Os cenarios de **filesystem** ja foram validados e esta etapa acrescenta os exemplos de **repository explicito**, mantendo os mesmos artefatos PDI de teste.
 
 ## Objetivos
 
@@ -18,10 +18,10 @@ O projeto esta sendo construido de forma incremental. A primeira entrega impleme
 | Exemplo | Executor | Origem / modo | Endpoint | Status |
 |---|---|---|---|---|
 | **Ex01** | Pentaho Server | Filesystem | `executeTrans` / `executeJob` | **Validado** |
-| **Ex02** | Pentaho Server | Repository explicito | `executeTrans` / `executeJob` | Proxima etapa |
+| **Ex02** | Pentaho Server | Repository explicito | `executeTrans` / `executeJob` | Implementado / pendente de validacao |
 | **Ex03** | Pentaho Server | Repository pre-configurado | `runTrans` / `runJob` | Planejado / validar |
 | **Ex04** | Carte Standalone | Filesystem | `executeTrans` / `executeJob` | **Validado** |
-| **Ex05** | Carte Standalone | Repository explicito | `executeTrans` / `executeJob` | Proxima etapa |
+| **Ex05** | Carte Standalone | Repository explicito | `executeTrans` / `executeJob` | Implementado / pendente de validacao |
 | **Ex06** | Carte Standalone | Repository pre-configurado | `runTrans` / `runJob` | Planejado |
 
 > Os exemplos de monitoramento, Scheduler API e APIs depreciadas foram registrados em [`docs/ROADMAP.md`](docs/ROADMAP.md) e serao tratados depois dos seis cenarios principais.
@@ -40,6 +40,7 @@ pdi-api-usage/
 ├── docs/
 │   ├── CARTE.md
 │   ├── CURL.md
+│   ├── REPOSITORY.md
 │   ├── ROADMAP.md
 │   └── TESTING.md
 ├── pdi/
@@ -50,11 +51,17 @@ pdi-api-usage/
 └── scripts/
     └── curl/
         ├── c01_pentaho_server/
-        │   └── ex01_filesystem/
+        │   ├── ex01_filesystem/
+        │   │   ├── execute_transformation.bat
+        │   │   └── execute_job.bat
+        │   └── ex02_repository_execute/
         │       ├── execute_transformation.bat
         │       └── execute_job.bat
         └── c02_carte_standalone/
-            └── ex04_filesystem/
+            ├── ex04_filesystem/
+            │   ├── execute_transformation.bat
+            │   └── execute_job.bat
+            └── ex05_repository_execute/
                 ├── execute_transformation.bat
                 └── execute_job.bat
 ```
@@ -214,6 +221,28 @@ Antes de executar o Ex04, confirme que o Carte iniciou em `http://localhost:9090
 Assim como no Pentaho Server, o caminho do `.ktr` ou `.kjb` precisa ser acessivel ao **processo do Carte**.
 
 O passo a passo completo de configuracao, inicializacao, localizacao do XML e validacao esta em [`docs/CARTE.md`](docs/CARTE.md).
+
+
+## Ex02 e Ex05 - repository explicito
+
+Estes exemplos continuam usando `executeTrans` e `executeJob`, mas acrescentam:
+
+```text
+rep
+user
+pass
+```
+
+Quando `rep` e informado, `trans` e `job` passam a representar caminhos logicos dentro do repository, e nao caminhos de arquivos locais.
+
+Exemplo:
+
+```text
+/public/pdi-api-usage/trf_api_test
+/public/pdi-api-usage/job_api_test
+```
+
+O executor ainda precisa conhecer a definicao do repository em seu ambiente PDI. O procedimento completo, incluindo `repositories.xml`, publicacao dos artefatos, duas camadas de autenticacao e troubleshooting, esta em [`docs/REPOSITORY.md`](docs/REPOSITORY.md).
 
 ## Como os parametros sao enviados
 

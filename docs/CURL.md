@@ -212,3 +212,29 @@ Além de definir o método GET, `--get` integra diretamente os valores fornecido
 As opções do `curl` permitem observar a perspectiva do cliente HTTP, mas não substituem o log interno do PDI.
 
 Para entender como validar a execução no `pdi.log`, acompanhar o arquivo em tempo real com PowerShell e aplicar filtros, consulte [`TESTING.md`](TESTING.md).
+
+
+## 7. Parametros de repository nos Ex02 e Ex05
+
+Os exemplos de repository explicito acrescentam quatro parametros importantes:
+
+```text
+rep
+user
+pass
+trans  (ou job)
+```
+
+`rep` seleciona pelo nome um repository conhecido pelo ambiente PDI do executor. `user` e `pass` sao usados para conectar a esse repository. Eles nao substituem `--user` do `curl`, que continua sendo a autenticacao HTTP no Pentaho Server ou Carte.
+
+Exemplo conceitual:
+
+```text
+--user "cluster:cluster"              -> autenticacao HTTP do Carte
+--data-urlencode "rep=PentahoRepo"    -> repository PDI
+--data-urlencode "user=admin"         -> usuario do repository
+--data-urlencode "pass=password"      -> senha do repository
+--data-urlencode "trans=/public/..."  -> objeto dentro do repository
+```
+
+Como `pass` e enviado na query segundo o contrato da API, consulte as observacoes de seguranca em [`REPOSITORY.md`](REPOSITORY.md).

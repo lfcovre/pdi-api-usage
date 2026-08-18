@@ -7,10 +7,10 @@ Este arquivo registra os cenarios planejados para que eles nao se percam durante
 | Exemplo | Executor | Origem / modo | API principal | Status |
 |---|---|---|---|---|
 | Ex01 | Pentaho Server | Filesystem acessivel pelo servidor | `executeTrans` / `executeJob` | **Validado** |
-| Ex02 | Pentaho Server | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | Proxima etapa |
+| Ex02 | Pentaho Server | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | **Implementado / pendente de validacao** |
 | Ex03 | Pentaho Server | Repositorio pre-configurado | `runTrans` / `runJob` | Planejado; validar no ambiente Pentaho Server |
 | Ex04 | Carte Standalone | Filesystem acessivel pelo Carte | `executeTrans` / `executeJob` | **Validado** |
-| Ex05 | Carte Standalone | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | Proxima etapa |
+| Ex05 | Carte Standalone | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | **Implementado / pendente de validacao** |
 | Ex06 | Carte Standalone | Repositorio pre-configurado no Carte | `runTrans` / `runJob` | Planejado |
 
 ## Blocos futuros

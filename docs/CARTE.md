@@ -312,3 +312,12 @@ Para esse caso, alem do XML de configuracao do Carte, o processo Carte precisara
 A documentacao oficial do Pentaho sobre configuracao de Carte mostra a inicializacao passando um arquivo XML ao script `carte.sh`/`Carte.bat` e informa que, quando o XML esta fora do diretorio do Carte, seu caminho deve ser informado no comando.
 
 Para execucoes baseadas em repository, a documentacao tambem informa que o Carte precisa ter acesso ao `repositories.xml`; esse ponto sera aplicado posteriormente no Ex06.
+
+
+## Repository explicito no Ex05
+
+O Ex05 continua usando o mesmo Carte em `localhost:9090`, mas exige que o processo do Carte consiga localizar uma definicao de repository correspondente a `PDI_REPOSITORY_NAME`.
+
+Isso e diferente do Ex06: no Ex05 as credenciais do repository sao enviadas em cada chamada `executeTrans`/`executeJob`; no Ex06 elas ficarao pre-configuradas no XML do Carte e serao usadas por `runTrans`/`runJob`.
+
+Consulte [`REPOSITORY.md`](REPOSITORY.md) antes de testar o Ex05.
