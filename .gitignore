@@ -1,12 +1,15 @@
-# Local environment configuration (may contain credentials)
+# Local environment configuration. May contain credentials.
 /config/environment.bat
 
-# Temporary/runtime files
+# Local Carte repository configuration. Contains repository credentials.
+/config/carte/carte-repository.xml
+
+# Runtime and temporary files
 *.log
 *.tmp
 *.bak
 
-# OS / IDE
+# OS and IDE
 .DS_Store
 Thumbs.db
 .vscode/

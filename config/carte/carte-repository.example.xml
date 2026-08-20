@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Reference configuration for the future Ex06 (Carte + preconfigured repository).
-  It is intentionally NOT used by Ex04.
+  Configuracao do Carte Standalone com Pentaho Repository pre-configurado.
 
-  The repository name must exist in repositories.xml visible to the user that
-  starts Carte. Replace all example values before using this file.
+  Usada pelo Ex04. Copie este arquivo para carte-repository.xml e substitua
+  os valores do repository. O arquivo local carte-repository.xml e ignorado
+  pelo Git.
+
+  O nome do repository deve corresponder a uma definicao disponivel no
+  repositories.xml visivel ao usuario do sistema operacional que inicia Carte.
 -->
 <slave_config>
   <slaveserver>

@@ -1,47 +1,46 @@
 # Roadmap
 
-Este arquivo registra os cenarios planejados para que eles nao se percam durante a evolucao incremental do projeto.
+Os quatro cenários principais estão validados. As próximas evoluções ficam registradas aqui para evitar criar pastas de implementação antes do trabalho começar.
 
-## Escopo principal: 6 cenarios de execucao
+## Postman
 
-| Exemplo | Executor | Origem / modo | API principal | Status |
-|---|---|---|---|---|
-| Ex01 | Pentaho Server | Filesystem acessivel pelo servidor | `executeTrans` / `executeJob` | **Validado** |
-| Ex02 | Pentaho Server | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | **Investigado / nao validado no ambiente atual** |
-| Ex03 | Pentaho Server | Repositorio pre-configurado | `runTrans` / `runJob` | Planejado; validar no ambiente Pentaho Server |
-| Ex04 | Carte Standalone | Filesystem acessivel pelo Carte | `executeTrans` / `executeJob` | **Validado** |
-| Ex05 | Carte Standalone | Repositorio informado explicitamente | `executeTrans` / `executeJob` com `rep`, `user` e `pass` | **Validado** |
-| Ex06 | Carte Standalone | Repositorio pre-configurado no Carte | `runTrans` / `runJob` | Planejado |
+As pastas `postman/` já existem dentro de cada exemplo e da variação avançada. Próximos passos:
 
-## Blocos futuros
+- criar requests equivalentes aos scripts curl;
+- avaliar uma collection única com environments para Pentaho Server e Carte;
+- documentar variáveis, autenticação e parâmetros;
+- manter a mesma matriz de cenários usada pelos exemplos curl.
 
-### c03_monitoring
+## Monitoramento
 
-Exemplos para consultar e controlar execucoes, incluindo status, parada e remocao de execucoes registradas no Carte/Pentaho.
+Estudar endpoints de acompanhamento e controle:
 
-Possiveis endpoints a documentar e testar:
+- status de Transformation;
+- status de Job;
+- uso do ID Carte retornado pelas execuções;
+- stop/remove quando aplicável;
+- diferenças entre respostas síncronas e execuções registradas no Carte.
 
-- `transStatus`
-- `jobStatus`
-- `stopTrans`
-- `stopJob`
-- `removeTrans`
-- `removeJob`
+## Scheduler API do Pentaho Server
 
-A lista final deve ser validada contra a versao do Pentaho/PDI usada nos testes.
+Tratar separadamente da execução direta de `.ktr/.kjb`:
 
-### c04_pentaho_scheduler
+- listar agendamentos;
+- criar e gerenciar schedules;
+- `triggerNow`;
+- diferença entre executar um artefato e disparar um agendamento.
 
-Exemplos especificos do Pentaho Server para criar/consultar agendamentos e disparar uma execucao pelo scheduler, incluindo o caso de `triggerNow`.
+## APIs legadas/depreciadas
 
-Esse bloco sera mantido separado dos exemplos Carte porque o scheduler pertence ao Pentaho Server e representa outro modelo de execucao.
+Manter apenas como estudo de compatibilidade:
 
-### legacy
+- `addTrans`;
+- `addJob`;
+- envio de `transformation_configuration` / `job_configuration`.
 
-Registrar, apenas para estudo e compatibilidade, APIs depreciadas relacionadas ao envio de configuracoes XML, como `addTrans` e `addJob`. Esses exemplos nao devem ser apresentados como abordagem recomendada para novas integracoes.
+## Outras evoluções
 
-## Achado da etapa de repository explicito
-
-O Ex05 confirmou o fluxo documentado no Carte Standalone: o processo Carte leu `C:\Users\sofintech\.kettle\repositories.xml`, encontrou o repository `localhost`, conectou ao Pentaho Repository e executou os dois artefatos.
-
-O Ex02, usando os mesmos valores de repository, retornou `Unable to find repository: localhost` no Carte incorporado ao Pentaho Server. Por enquanto, o projeto registra esse comportamento como **investigado / nao validado**, sem alterar arquivos internos do Pentaho Server apenas para forcar a simetria com o Carte Standalone. A arquitetura dos Ex02/Ex03 sera reavaliada antes da implementacao do proximo bloco do Pentaho Server.
+- exemplos em PowerShell puro;
+- CI/CD para publicação e execução;
+- Java API do PDI como projeto separado;
+- HTTPS e contas não administrativas.
