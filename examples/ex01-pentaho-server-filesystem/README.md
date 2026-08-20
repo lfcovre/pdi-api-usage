@@ -73,4 +73,17 @@ Consulte [../../docs/testing.md](../../docs/testing.md).
 
 ## Postman
 
-A pasta `postman/` está reservada para a versão equivalente deste cenário em Postman.
+Na Collection `PDI API Usage`, use a pasta:
+
+```text
+01 - Pentaho Server - Filesystem
+```
+
+Requests:
+
+```text
+Transformation - executeTrans
+Job - executeJob
+```
+
+A Collection e o Environment ficam centralizados em [../../postman/README.md](../../postman/README.md).

@@ -1,15 +1,6 @@
 # Roadmap
 
-Os quatro cenários principais estão validados. As próximas evoluções ficam registradas aqui para evitar criar pastas de implementação antes do trabalho começar.
-
-## Postman
-
-As pastas `postman/` já existem dentro de cada exemplo e da variação avançada. Próximos passos:
-
-- criar requests equivalentes aos scripts curl;
-- avaliar uma collection única com environments para Pentaho Server e Carte;
-- documentar variáveis, autenticação e parâmetros;
-- manter a mesma matriz de cenários usada pelos exemplos curl.
+Os quatro cenários principais estão validados e possuem exemplos em curl e Postman. As próximas evoluções ficam registradas aqui para evitar criar estruturas de implementação antes do trabalho começar.
 
 ## Monitoramento
 
@@ -41,6 +32,7 @@ Manter apenas como estudo de compatibilidade:
 ## Outras evoluções
 
 - exemplos em PowerShell puro;
+- execução automatizada da Collection com Postman CLI ou Newman;
 - CI/CD para publicação e execução;
 - Java API do PDI como projeto separado;
 - HTTPS e contas não administrativas.

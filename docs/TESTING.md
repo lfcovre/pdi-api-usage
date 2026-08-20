@@ -1,10 +1,15 @@
 # Testes, logs e resultados validados
 
-## 1. Dois pontos de observação
+## 1. Pontos de observação
 
 ### Cliente HTTP
 
-É o terminal que executa o `.bat`. Ele mostra endpoint, parâmetros relevantes, corpo da resposta e `HTTP_STATUS`.
+Pode ser:
+
+- terminal que executa o `.bat` com curl;
+- resposta e aba de testes do Postman.
+
+O cliente mostra endpoint, parâmetros relevantes, corpo da resposta e status HTTP. A Collection Postman também executa testes básicos sobre o status e, quando aplicável, sobre o XML retornado.
 
 ### Engine PDI
 
@@ -55,6 +60,8 @@ Um cenário é considerado validado quando:
 5. `P_MESSAGE` contém o valor enviado;
 6. o artefato não termina com erro funcional.
 
+Um teste verde no Postman confirma a resposta HTTP esperada, mas não substitui os itens 3 a 6.
+
 ## 4. Status atual
 
 | Exemplo | Transformation | Job | Status |
@@ -95,7 +102,7 @@ A execução do objeto correto foi confirmada; o comportamento foi tratado apena
 
 ### Ex03 — Carte / filesystem
 
-No ambiente validado, os endpoints sem barra final retornaram HTTP 301. Os scripts usam:
+No ambiente validado, os endpoints sem barra final retornaram HTTP 301. Os scripts e a Collection usam:
 
 ```text
 /kettle/executeTrans/
@@ -110,12 +117,14 @@ O terminal do Carte mostrou a leitura de `repositories.xml` e a conexão com o P
 
 Em uma execução foi observado erro de rotação/exclusão de `pdi.log` por arquivo em uso. A execução continuou normalmente e o evento não foi considerado falha do endpoint.
 
-## 6. Salvar a saída do cliente
+## 6. Salvar a saída do cliente curl
 
 Exemplo:
 
 ```powershell
-.\transformation.bat *> transformation-client.log
+.	ransformation.bat *> transformation-client.log
 ```
 
 Esse arquivo contém a saída do cliente HTTP, não o log interno completo do PDI.
+
+Para Postman, consulte [postman.md](postman.md) para os testes incluídos e a observação sobre redirects.

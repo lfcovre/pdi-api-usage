@@ -132,7 +132,11 @@ pass
 
 Mesmo nesse modo, `rep` é um nome lógico e o processo Carte precisa conhecer a definição correspondente no `repositories.xml`.
 
-## 6. Segurança
+## 6. Configuração do Postman
+
+A Collection Postman não usa `config/environment.bat`. Importe `postman/environments/local.example.postman_environment.json` e ajuste URLs, caminhos físicos e credenciais no Environment local. Consulte [postman.md](postman.md).
+
+## 7. Segurança
 
 Não versione:
 
@@ -144,3 +148,5 @@ config/carte/carte-repository.xml
 Esses arquivos podem conter credenciais. Os scripts agora exigem a configuração local e não executam automaticamente usando valores do arquivo `.example`.
 
 Em ambientes compartilhados, use HTTPS, contas específicas e políticas de acesso adequadas. Evite expor endpoints Carte diretamente à Internet.
+
+Para Postman, também não versione nem publique exports de Environment que contenham credenciais reais.

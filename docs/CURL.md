@@ -1,6 +1,6 @@
 # Uso do curl nos exemplos
 
-Os exemplos atuais usam `curl.exe` em arquivos `.bat`. O Postman será adicionado posteriormente em pastas separadas dentro de cada cenário.
+Os exemplos de linha de comando usam `curl.exe` em arquivos `.bat`. A alternativa equivalente em Postman está centralizada em [postman.md](postman.md).
 
 ## 1. Opções usadas
 
@@ -20,7 +20,7 @@ Os exemplos atuais usam `curl.exe` em arquivos `.bat`. O Postman será adicionad
 Em vez de concatenar manualmente:
 
 ```text
-?trans=C:\pasta com espaco\arquivo.ktr&level=Basic
+?trans=C:\pasta com espacorquivo.ktr&level=Basic
 ```
 
 os scripts usam:

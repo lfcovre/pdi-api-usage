@@ -14,3 +14,7 @@
 Thumbs.db
 .vscode/
 .idea/
+
+# Local Postman environments may contain credentials.
+/postman/environments/local.postman_environment.json
+/postman/environments/*.local.postman_environment.json

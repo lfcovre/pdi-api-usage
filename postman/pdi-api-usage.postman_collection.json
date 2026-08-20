@@ -1,0 +1,656 @@
+{
+  "info": {
+    "_postman_id": "91d3eff4-5bec-4968-944b-2b23d671eea5",
+    "name": "PDI API Usage",
+    "description": "Collection do projeto PDI API Usage. Reúne os quatro cenários principais e a variação Carte com repository informado na requisição. Use junto com postman/environments/local.example.postman_environment.json.\n\nOs endpoints fazem parte da API Carte e podem ser expostos tanto pelo Carte Standalone quanto pelo Carte incorporado ao Pentaho Server. A escolha entre execute* e run* depende principalmente de como o artefato será localizado.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"HTTP status is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "log_level",
+      "value": "Basic",
+      "type": "string"
+    },
+    {
+      "key": "p_message",
+      "value": "Mensagem enviada pela API REST do PDI",
+      "type": "string"
+    },
+    {
+      "key": "repository_trans_path",
+      "value": "/public/pdi-api-usage/trf_api_test",
+      "type": "string"
+    },
+    {
+      "key": "repository_job_path",
+      "value": "/public/pdi-api-usage/job_api_test",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Pentaho Server - Filesystem",
+      "description": "Engine PDI incorporada ao Pentaho Server. Artefatos carregados do filesystem com executeTrans/executeJob.",
+      "auth": {
+        "type": "basic",
+        "basic": [
+          {
+            "key": "username",
+            "value": "{{pentaho_server_user}}",
+            "type": "string"
+          },
+          {
+            "key": "password",
+            "value": "{{pentaho_server_password}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Transformation - executeTrans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{pentaho_server_url}}/kettle/executeTrans",
+              "host": [
+                "{{pentaho_server_url}}"
+              ],
+              "path": [
+                "kettle",
+                "executeTrans"
+              ],
+              "query": [
+                {
+                  "key": "trans",
+                  "value": "{{trans_file_path}}"
+                },
+                {
+                  "key": "level",
+                  "value": "{{log_level}}"
+                },
+                {
+                  "key": "P_MESSAGE",
+                  "value": "{{p_message}}"
+                }
+              ]
+            },
+            "description": "Executa trf_api_test.ktr pelo Pentaho Server. Sem rep, trans é tratado como caminho físico. Em sucesso, executeTrans pode retornar corpo vazio; confirme também no pdi.log."
+          },
+          "response": []
+        },
+        {
+          "name": "Job - executeJob",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{pentaho_server_url}}/kettle/executeJob",
+              "host": [
+                "{{pentaho_server_url}}"
+              ],
+              "path": [
+                "kettle",
+                "executeJob"
+              ],
+              "query": [
+                {
+                  "key": "job",
+                  "value": "{{job_file_path}}"
+                },
+                {
+                  "key": "level",
+                  "value": "{{log_level}}"
+                },
+                {
+                  "key": "P_MESSAGE",
+                  "value": "{{p_message}}"
+                }
+              ]
+            },
+            "description": "Executa job_api_test.kjb pelo Pentaho Server. Sem rep, job é tratado como caminho físico."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.text();",
+                  "pm.test(\"PDI returned OK\", function () {",
+                  "    pm.expect(body).to.include(\"<result>OK</result>\");",
+                  "});",
+                  "pm.test(\"Job was started\", function () {",
+                  "    pm.expect(body).to.include(\"<message>Job started</message>\");",
+                  "});",
+                  "pm.test(\"Execution ID was returned\", function () {",
+                  "    pm.expect(body).to.match(/<id>[^<]+<\\/id>/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Pentaho Server - Pentaho Repository",
+      "description": "Engine PDI incorporada ao Pentaho Server. Objetos do repository interno executados com runTrans/runJob.",
+      "auth": {
+        "type": "basic",
+        "basic": [
+          {
+            "key": "username",
+            "value": "{{pentaho_server_user}}",
+            "type": "string"
+          },
+          {
+            "key": "password",
+            "value": "{{pentaho_server_password}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Transformation - runTrans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{pentaho_server_url}}/kettle/runTrans",
+              "host": [
+                "{{pentaho_server_url}}"
+              ],
+              "path": [
+                "kettle",
+                "runTrans"
+              ],
+              "query": [
+                {
+                  "key": "trans",
+                  "value": "{{repository_trans_path}}"
+                },
+                {
+                  "key": "level",
+                  "value": "{{log_level}}"
+                },
+                {
+                  "key": "P_MESSAGE",
+                  "value": "{{p_message}}"
+                }
+              ]
+            },
+            "description": "Executa a Transformation armazenada no Pentaho Repository interno do Server. A requisição envia apenas o caminho lógico do objeto e parâmetros de execução."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.text();",
+                  "pm.test(\"PDI returned OK\", function () {",
+                  "    pm.expect(body).to.include(\"<result>OK</result>\");",
+                  "});",
+                  "pm.test(\"Transformation was started\", function () {",
+                  "    pm.expect(body).to.include(\"<message>Transformation started</message>\");",
+                  "});",
+                  "pm.test(\"Execution ID was returned\", function () {",
+                  "    pm.expect(body).to.match(/<id>[^<]+<\\/id>/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Job - runJob",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{pentaho_server_url}}/kettle/runJob",
+              "host": [
+                "{{pentaho_server_url}}"
+              ],
+              "path": [
+                "kettle",
+                "runJob"
+              ],
+              "query": [
+                {
+                  "key": "job",
+                  "value": "{{repository_job_path}}"
+                },
+                {
+                  "key": "level",
+                  "value": "{{log_level}}"
+                },
+                {
+                  "key": "P_MESSAGE",
+                  "value": "{{p_message}}"
+                }
+              ]
+            },
+            "description": "Executa o Job armazenado no Pentaho Repository interno do Server. A requisição não envia rep/user/pass do repository."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.text();",
+                  "pm.test(\"PDI returned OK\", function () {",
+                  "    pm.expect(body).to.include(\"<result>OK</result>\");",
+                  "});",
+                  "pm.test(\"Job was started\", function () {",
+                  "    pm.expect(body).to.include(\"<message>Job started</message>\");",
+                  "});",
+                  "pm.test(\"Execution ID was returned\", function () {",
+                  "    pm.expect(body).to.match(/<id>[^<]+<\\/id>/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Carte Standalone - Filesystem",
+      "description": "Carte Standalone. Artefatos carregados do filesystem com executeTrans/executeJob.",
+      "auth": {
+        "type": "basic",
+        "basic": [
+          {
+            "key": "username",
+            "value": "{{carte_user}}",
+            "type": "string"
+          },
+          {
+            "key": "password",
+            "value": "{{carte_password}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Transformation - executeTrans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{carte_url}}/kettle/executeTrans/",
+              "host": [
+                "{{carte_url}}"
+              ],
+              "path": [
+                "kettle",
+                "executeTrans",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "trans",
+                  "value": "{{trans_file_path}}"
+                },
+                {
+                  "key": "level",
+                  "value": "{{log_level}}"
+                },
+                {
+                  "key": "P_MESSAGE",
+                  "value": "{{p_message}}"
+                }
+              ]
+            },
+            "description": "Executa trf_api_test.ktr pelo Carte Standalone. A barra final é mantida porque o ambiente validado retornou HTTP 301 sem ela. Em sucesso, executeTrans pode retornar corpo vazio."
+          },
+          "response": []
+        },
+        {
+          "name": "Job - executeJob",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{carte_url}}/kettle/executeJob/",
+              "host": [
+                "{{carte_url}}"
+              ],
+              "path": [
+                "kettle",
+                "executeJob",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "job",
+                  "value": "{{job_file_path}}"
+                },
+                {
+                  "key": "level",
+                  "value": "{{log_level}}"
+                },
+                {
+                  "key": "P_MESSAGE",
+                  "value": "{{p_message}}"
+                }
+              ]
+            },
+            "description": "Executa job_api_test.kjb pelo Carte Standalone. A barra final evita o redirecionamento observado no ambiente de teste."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.text();",
+                  "pm.test(\"PDI returned OK\", function () {",
+                  "    pm.expect(body).to.include(\"<result>OK</result>\");",
+                  "});",
+                  "pm.test(\"Job was started\", function () {",
+                  "    pm.expect(body).to.include(\"<message>Job started</message>\");",
+                  "});",
+                  "pm.test(\"Execution ID was returned\", function () {",
+                  "    pm.expect(body).to.match(/<id>[^<]+<\\/id>/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Carte Standalone - Pentaho Repository",
+      "description": "Carte Standalone com o Pentaho Repository configurado previamente no XML de inicialização. Usa runTrans/runJob.",
+      "auth": {
+        "type": "basic",
+        "basic": [
+          {
+            "key": "username",
+            "value": "{{carte_user}}",
+            "type": "string"
+          },
+          {
+            "key": "password",
+            "value": "{{carte_password}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Transformation - runTrans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{carte_url}}/kettle/runTrans/",
+              "host": [
+                "{{carte_url}}"
+              ],
+              "path": [
+                "kettle",
+                "runTrans",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "trans",
+                  "value": "{{repository_trans_path}}"
+                },
+                {
+                  "key": "level",
+                  "value": "{{log_level}}"
+                },
+                {
+                  "key": "P_MESSAGE",
+                  "value": "{{p_message}}"
+                }
+              ]
+            },
+            "description": "Executa a Transformation do Pentaho Repository usando o repository previamente configurado no Carte. rep/user/pass não são enviados nesta chamada."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.text();",
+                  "pm.test(\"PDI returned OK\", function () {",
+                  "    pm.expect(body).to.include(\"<result>OK</result>\");",
+                  "});",
+                  "pm.test(\"Transformation was started\", function () {",
+                  "    pm.expect(body).to.include(\"<message>Transformation started</message>\");",
+                  "});",
+                  "pm.test(\"Execution ID was returned\", function () {",
+                  "    pm.expect(body).to.match(/<id>[^<]+<\\/id>/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Job - runJob",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{carte_url}}/kettle/runJob/",
+              "host": [
+                "{{carte_url}}"
+              ],
+              "path": [
+                "kettle",
+                "runJob",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "job",
+                  "value": "{{repository_job_path}}"
+                },
+                {
+                  "key": "level",
+                  "value": "{{log_level}}"
+                },
+                {
+                  "key": "P_MESSAGE",
+                  "value": "{{p_message}}"
+                }
+              ]
+            },
+            "description": "Executa o Job do Pentaho Repository usando o repository previamente configurado no Carte."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.text();",
+                  "pm.test(\"PDI returned OK\", function () {",
+                  "    pm.expect(body).to.include(\"<result>OK</result>\");",
+                  "});",
+                  "pm.test(\"Job was started\", function () {",
+                  "    pm.expect(body).to.include(\"<message>Job started</message>\");",
+                  "});",
+                  "pm.test(\"Execution ID was returned\", function () {",
+                  "    pm.expect(body).to.match(/<id>[^<]+<\\/id>/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Variants",
+      "description": "Variações que não representam novas combinações da matriz principal.",
+      "item": [
+        {
+          "name": "Carte - Explicit Repository",
+          "description": "Carte Standalone com executeTrans/executeJob e rep/user/pass do Pentaho Repository enviados na própria requisição.",
+          "auth": {
+            "type": "basic",
+            "basic": [
+              {
+                "key": "username",
+                "value": "{{carte_user}}",
+                "type": "string"
+              },
+              {
+                "key": "password",
+                "value": "{{carte_password}}",
+                "type": "string"
+              }
+            ]
+          },
+          "item": [
+            {
+              "name": "Transformation - executeTrans + rep",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{carte_url}}/kettle/executeTrans/",
+                  "host": [
+                    "{{carte_url}}"
+                  ],
+                  "path": [
+                    "kettle",
+                    "executeTrans",
+                    ""
+                  ],
+                  "query": [
+                    {
+                      "key": "rep",
+                      "value": "{{repository_name}}"
+                    },
+                    {
+                      "key": "user",
+                      "value": "{{repository_user}}"
+                    },
+                    {
+                      "key": "pass",
+                      "value": "{{repository_password}}"
+                    },
+                    {
+                      "key": "trans",
+                      "value": "{{repository_trans_path}}"
+                    },
+                    {
+                      "key": "level",
+                      "value": "{{log_level}}"
+                    },
+                    {
+                      "key": "P_MESSAGE",
+                      "value": "{{p_message}}"
+                    }
+                  ]
+                },
+                "description": "Variação do cenário Carte + Pentaho Repository. O repository é selecionado explicitamente por rep e autenticado por user/pass na query string. executeTrans pode retornar corpo vazio em sucesso."
+              },
+              "response": []
+            },
+            {
+              "name": "Job - executeJob + rep",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{carte_url}}/kettle/executeJob/",
+                  "host": [
+                    "{{carte_url}}"
+                  ],
+                  "path": [
+                    "kettle",
+                    "executeJob",
+                    ""
+                  ],
+                  "query": [
+                    {
+                      "key": "rep",
+                      "value": "{{repository_name}}"
+                    },
+                    {
+                      "key": "user",
+                      "value": "{{repository_user}}"
+                    },
+                    {
+                      "key": "pass",
+                      "value": "{{repository_password}}"
+                    },
+                    {
+                      "key": "job",
+                      "value": "{{repository_job_path}}"
+                    },
+                    {
+                      "key": "level",
+                      "value": "{{log_level}}"
+                    },
+                    {
+                      "key": "P_MESSAGE",
+                      "value": "{{p_message}}"
+                    }
+                  ]
+                },
+                "description": "Variação do cenário Carte + Pentaho Repository. O repository é informado e autenticado na própria requisição."
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const body = pm.response.text();",
+                      "pm.test(\"PDI returned OK\", function () {",
+                      "    pm.expect(body).to.include(\"<result>OK</result>\");",
+                      "});",
+                      "pm.test(\"Job was started\", function () {",
+                      "    pm.expect(body).to.include(\"<message>Job started</message>\");",
+                      "});",
+                      "pm.test(\"Execution ID was returned\", function () {",
+                      "    pm.expect(body).to.match(/<id>[^<]+<\\/id>/);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

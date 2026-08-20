@@ -38,4 +38,13 @@ Consulte [../../../docs/api-endpoints.md](../../../docs/api-endpoints.md) e [../
 
 ## Postman
 
-A pasta `postman/` está reservada para a versão equivalente desta variação em Postman.
+Na Collection `PDI API Usage`, use:
+
+```text
+Variants
+└── Carte - Explicit Repository
+    ├── Transformation - executeTrans + rep
+    └── Job - executeJob + rep
+```
+
+A Collection e o Environment ficam centralizados em [../../../postman/README.md](../../../postman/README.md).
